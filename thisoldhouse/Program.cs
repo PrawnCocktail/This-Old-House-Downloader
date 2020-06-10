@@ -22,10 +22,22 @@ namespace thisoldhouse
             checkfFmpeg();
 
             //get url from console
-            Console.WriteLine("Please enter the video url.");
-            string url = Console.ReadLine();
+            Console.WriteLine("Please enter a single video url or multiple urls seperated by a space.");
+            var urls = Console.ReadLine().Split(' ');
+            Console.WriteLine("Downloading " + urls.Length + " videos");
+            foreach (var url in urls)
+            {
+                downloadVideo(url);
+            }
 
+            Console.Write("Downloads Finished.");
+            Console.WriteLine("Exiting in 10 seconds.");
+            Thread.Sleep(10000);
+            Environment.Exit(0);
+        }
 
+        static void downloadVideo(string url)
+        {
             //get embed link from main url
             var web = new HtmlWeb();
             var doc = web.Load(url);
@@ -68,7 +80,7 @@ namespace thisoldhouse
 
                 Process ffmpeg = new Process();
                 ffmpeg.StartInfo.FileName = "ffmpeg.exe";
-                ffmpeg.StartInfo.Arguments = "-i \"" + m3u8Link + "\" -c copy \"" + title + ".mp4\"";
+                ffmpeg.StartInfo.Arguments = "-i \"" + m3u8Link + "\" -c copy \"" + title + ".mkv\"";
 
                 //uncommment to hide ffmpeg output
                 //ffmpeg.StartInfo.UseShellExecute = false;
@@ -81,11 +93,6 @@ namespace thisoldhouse
             {
                 Console.WriteLine("ffmpeg missing, Cant download video.");
             }
-
-            Console.Write("Download Finished.");
-            Console.WriteLine("Exiting in 10 seconds.");
-            Thread.Sleep(10000);
-            Environment.Exit(0);
         }
 
         static void checkfFmpeg()
