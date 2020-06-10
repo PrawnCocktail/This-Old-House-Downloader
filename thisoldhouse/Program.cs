@@ -29,11 +29,20 @@ namespace thisoldhouse
             //get embed link from main url
             var web = new HtmlWeb();
             var doc = web.Load(url);
-            string embedlink = doc.DocumentNode.SelectSingleNode("//iframe").Attributes["src"].Value;
+            var iframes = doc.DocumentNode.SelectNodes("//iframe");
 
+            string embedLink = "";
+            foreach (var iframe in iframes)
+            {
+                if (iframe.Attributes["src"].Value.Contains("thisoldhouse.com/videos"))
+                {
+                    embedLink = iframe.Attributes["src"].Value;
+                    break;
+                }
+            }
 
             //follow link and get location of actual player url
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(embedlink);
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(embedLink);
             request.AllowAutoRedirect = false;
             var response = request.GetResponse();
             string location = response.Headers["Location"];
